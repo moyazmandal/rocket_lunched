@@ -1,0 +1,521 @@
+/* === GLOBAL & FONTS === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #020408; /* Deep space black */
+    color: #c9d1d9;
+    font-family: 'Rajdhani', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* === MISSION CONTROL UI === */
+#mission-control-ui {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    transition: opacity 0.8s ease;
+}
+
+/* Top Nav Bar */
+.nav-bar {
+    background: #0d1117;
+    border-bottom: 1px solid #1f2937;
+    padding: 12px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    color: #8b949e;
+    letter-spacing: 1px;
+}
+
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #3fb950; /* Green nominal status */
+    border-radius: 50%;
+    margin-right: 8px;
+    box-shadow: 0 0 8px #3fb950;
+    animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* Main Grid Layout */
+.control-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 20px;
+    padding: 20px;
+    background: #010305;
+}
+
+/* === LEFT: ASSEMBLY VIEW === */
+.assembly-view {
+    background: #0a0f18;
+    border: 1px solid #1b2536;
+    border-radius: 4px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.section-title {
+    font-size: 18px;
+    color: #58a6ff;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #1b2536;
+    width: 100%;
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+.rocket-scaffold {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    height: 100%;
+    justify-content: center;
+}
+
+/* Assembly Slots */
+.assembly-slot {
+    width: 140px;
+    border: 1px dashed #30363d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.3s ease;
+    background: rgba(0,0,0,0.2);
+}
+
+.assembly-slot.filled {
+    border: 1px solid #238636;
+    background: rgba(35, 134, 54, 0.1);
+    box-shadow: inset 0 0 15px rgba(35, 134, 54, 0.2);
+}
+
+.slot-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: #484f58;
+    text-align: center;
+    margin-bottom: 5px;
+    letter-spacing: 0.5px;
+}
+
+.filled .slot-label {
+    color: #3fb950;
+}
+
+/* Specific Slot Heights */
+#slot-fairing { height: 100px; clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%); width: 120px; }
+#slot-stage2 { height: 100px; width: 120px; }
+.interstage-adapter { height: 20px; width: 140px; background: #21262d; border: 1px solid #30363d; }
+#slot-stage1 { height: 150px; width: 140px; }
+#slot-engine { height: 120px; width: 140px; }
+
+/* Realistic Engine Structure (CSS Shapes) */
+.engine-assembly-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    bottom: 0;
+}
+
+.gimbal-mount { width: 40px; height: 10px; background: #30363d; border-radius: 2px; }
+.combustion-chamber { width: 30px; height: 20px; background: linear-gradient(90deg, #1f2937, #4b5563, #1f2937); }
+.nozzle-bell {
+    width: 50px;
+    height: 40px;
+    background: linear-gradient(90deg, #1f2937, #6b7280, #1f2937);
+    border-radius: 0 0 25px 25px; /* Creates the Bell curve shape */
+    box-shadow: inset 0 10px 15px rgba(0,0,0,0.8);
+    position: relative;
+}
+.nozzle-bell::after { /* Nozzle inner throat */
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 30px;
+    background: #0d1117;
+    border-radius: 0 0 10px 10px;
+}
+.turbopump-housing { width: 15px; height: 15px; background: #4b5563; border-radius: 50%; position: absolute; right: 25px; top: 15px; }
+
+/* === RIGHT: SYSTEMS PANEL === */
+.systems-panel {
+    background: #0d1117;
+    border: 1px solid #1b2536;
+    border-radius: 4px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Telemetry Box */
+.telemetry-box {
+    background: #010305;
+    border: 1px solid #21262d;
+    padding: 15px;
+    border-radius: 4px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+}
+
+.telemetry-box h3 { color: #8b949e; margin-bottom: 15px; letter-spacing: 2px; font-size: 14px; }
+.data-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: #c9d1d9; }
+.data-row span:last-child { color: #58a6ff; }
+
+/* Parts Inventory */
+.inventory-box h3 { color: #8b949e; margin-bottom: 15px; letter-spacing: 2px; font-size: 14px; }
+
+.part-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    padding: 15px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: grab;
+    transition: 0.2s;
+    margin-bottom: 10px;
+}
+
+.part-card:hover {
+    border-color: #58a6ff;
+    background: #1c2333;
+    transform: translateY(-2px);
+}
+
+.part-card.installed {
+    opacity: 0.3;
+    pointer-events: none;
+    border-color: #238636;
+}
+
+.part-icon { width: 40px; height: 40px; background: #21262d; border-radius: 4px; display: flex; justify-content: center; align-items: center; }
+.fairing-icon { clip-path: polygon(50% 0%, 100% 100%, 0% 100%); background: #8b949e; width: 20px; height: 20px; }
+.stage2-icon, .stage1-icon { width: 20px; height: 30px; background: #8b949e; border: 1px solid #6b7280; }
+.engine-icon { width: 20px; height: 20px; background: #8b949e; border-radius: 0 0 10px 10px; }
+
+.part-info { display: flex; flex-direction: column; }
+.part-name { font-weight: 600; font-size: 15px; }
+.part-mass { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: #8b949e; }
+
+/* Launch Buttons */
+.launch-control { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+
+#arm-btn, #launch-btn {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid;
+    border-radius: 4px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 16px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.2s;
+    text-transform: uppercase;
+}
+
+#arm-btn {
+    background: transparent;
+    border-color: #d29922;
+    color: #d29922;
+}
+#arm-btn:hover:not(:disabled) { background: rgba(210, 153, 34, 0.1); }
+
+#launch-btn {
+    background: #da3633;
+    border-color: #da3633;
+    color: white;
+}
+#launch-btn:hover:not(:disabled) { background: #f85149; border-color: #f85149; box-shadow: 0 0 15px rgba(248, 81, 73, 0.5); }
+
+#arm-btn:disabled, #launch-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    border-color: #30363d;
+    color: #484f58;
+    background: transparent;
+}
+
+/* ===================================================
+   === LAUNCH SEQUENCE VIEW (THE REALISTIC MODAL) ===
+   =================================================== */
+#launch-sequence-view {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Camera HUD Overlay */
+.camera-hud {
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    pointer-events: none;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.hud-top-left, .hud-top-right {
+    position: absolute;
+    top: 20px;
+    font-family: 'Share Tech Mono', monospace;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+}
+.hud-top-left { left: 20px; }
+.hud-top-right { right: 20px; color: #f85149; }
+
+.crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    border-radius: 50%;
+}
+.crosshair::before, .crosshair::after {
+    content: '';
+    position: absolute;
+    background: rgba(255, 0, 0, 0.3);
+}
+.crosshair::before { width: 1px; height: 100%; left: 50%; top: 0; }
+.crosshair::after { width: 100%; height: 1px; top: 50%; left: 0; }
+
+/* The Actual Flying Rocket */
+.launch-vehicle-assembly {
+    position: absolute;
+    bottom: 15%;
+    z-index: 15;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Realistic Rocket Shapes */
+.lv-fairing {
+    width: 50px;
+    height: 100px;
+    background: linear-gradient(90deg, #b0b8c4, #e6eaf0, #b0b8c4);
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+}
+.lv-stage2 {
+    width: 50px;
+    height: 80px;
+    background: linear-gradient(90deg, #8b949e, #c9d1d9, #8b949e);
+    border-left: 1px solid #6b7280;
+    border-right: 1px solid #6b7280;
+}
+.lv-interstage { width: 60px; height: 15px; background: #30363d; border: 1px solid #4b5563; }
+.lv-stage1 {
+    width: 60px;
+    height: 140px;
+    background: linear-gradient(90deg, #6b7280, #d1d5db, #6b7280);
+    border-left: 1px solid #4b5563;
+    border-right: 1px solid #4b5563;
+    position: relative;
+}
+/* Grid fins on first stage */
+.lv-stage1::before, .lv-stage1::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 8px;
+    background: #4b5563;
+    top: 20px;
+}
+.lv-stage1::before { left: -20px; }
+.lv-stage1::after { right: -20px; }
+
+/* Engine Cluster (Multiple Nozzles) */
+.lv-engine-cluster {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    z-index: 15;
+}
+
+.single-nozzle {
+    width: 14px;
+    height: 20px;
+    background: #4b5563;
+    border-radius: 0 0 7px 7px;
+    box-shadow: inset 0 0 5px #000;
+    position: relative;
+}
+.single-nozzle::after { /* Nozzle interior */
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 6px;
+    height: 12px;
+    background: #111827;
+    border-radius: 0 0 3px 3px;
+}
+
+/* Exhaust Plume (Realistic Fire) */
+/* Exhaust Plume (Now relative to Rocket Engine) */
+.exhaust-plume {
+    /* position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%); */
+    margin-top: -15px; /* ইঞ্জিনের সাথে একটু ওভারল্যাপ করানোর জন্য */
+    width: 80px;
+    height: 250px;
+    background: linear-gradient(to bottom, 
+        rgba(255,255,255,1) 0%, 
+        rgba(255,242,54,1) 15%, 
+        rgba(255,152,0,1) 40%, 
+        rgba(244,67,54,0.8) 70%, 
+        rgba(244,67,54,0) 100%);
+    opacity: 0;
+    z-index: -1; /* রকেটের বডির পেছনে থাকবে */
+    filter: blur(4px);
+    clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+}
+
+/* Mach Diamonds (Inside the plume) */
+.mach-diamond {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.9);
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    z-index: 1;
+    opacity: 0;
+    filter: blur(1px);
+}
+
+/* Mach Diamonds (Shock Diamonds in real engines) */
+.mach-diamond {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.9);
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); /* Diamond shape */
+    z-index: 11;
+    opacity: 0;
+    filter: blur(1px);
+}
+
+/* Ground Effect Cloud (Smoke) */
+.ground-effect-cloud {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 25%;
+    background: radial-gradient(ellipse at center bottom, rgba(255,255,255,0.6) 0%, transparent 60%);
+    z-index: 5;
+    opacity: 0;
+}
+
+/* Countdown Overlay */
+.countdown-display {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 100px;
+    color: #fff;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    z-index: 40;
+    letter-spacing: 5px;
+}
+
+/* === JS TRIGGERED ANIMATION CLASSES === */
+.shake-structural {
+    animation: structural-load 0.05s infinite;
+}
+
+@keyframes structural-load {
+    0% { transform: translate(-1px, 1px) rotate(0deg); }
+    20% { transform: translate(1px, -1px) rotate(0.5deg); }
+    40% { transform: translate(-1px, -1px) rotate(-0.5deg); }
+    60% { transform: translate(1px, 1px) rotate(0deg); }
+    80% { transform: translate(-1px, 1px) rotate(0.5deg); }
+    100% { transform: translate(1px, -1px) rotate(-0.5deg); }
+}
+
+.ignition-active {
+    opacity: 1 !important;
+    animation: exhaust-flicker 0.1s infinite alternate;
+}
+
+.mach-active {
+    opacity: 1 !important;
+    animation: mach-flicker 0.2s infinite alternate;
+}
+
+@keyframes exhaust-flicker {
+    0% { transform: scaleY(0.9) scaleX(0.95); }
+    100% { transform: scaleY(1.1) scaleX(1.05); }
+}
+
+@keyframes mach-flicker {
+    0% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+.smoke-active {
+    opacity: 1 !important;
+    animation: smoke-billow 4s forwards;
+}
+
+@keyframes smoke-billow {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(3) translateY(-50px); opacity: 0; }
+}
+
+.launch-takeoff {
+    animation: takeoff-trajectory 6s cubic-bezier(0.4, 0, 1, 1) forwards; /* Smooth liftoff curve */
+}
+
+@keyframes takeoff-trajectory {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-2000px); }
+}

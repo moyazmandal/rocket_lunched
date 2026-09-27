@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrated Launch Simulator | Mission Control</title>
+    <!-- Google Font for Technical Look -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- MAIN MISSION CONTROL INTERFACE -->
+    <div id="mission-control-ui">
+        
+        <!-- Top Navigation Bar (Status) -->
+        <header class="nav-bar">
+            <div class="mission-id">MISSION ID: ARTM-<span id="dynamic-id">734</span></div>
+            <div class="system-status">
+                <span class="status-dot"></span> SYSTEMS NOMINAL
+            </div>
+            <div class="utc-time">UTC: <span id="clock">00:00:00</span></div>
+        </header>
+
+        <!-- Main Grid Layout -->
+        <main class="control-grid">
+            
+            <!-- LEFT: Assembly View (The Rocket) -->
+            <section class="assembly-view">
+                <h2 class="section-title">VEHICLE ASSEMBLY</h2>
+                
+                <!-- Rocket Scaffold (Where parts will be dropped) -->
+                <div class="rocket-scaffold">
+                    
+                    <!-- Slot 1: Payload Fairing (Nose) -->
+                    <div class="assembly-slot" id="slot-fairing" data-accepts="fairing">
+                        <div class="slot-label">PAYLOAD FAIRING</div>
+                        <div class="slot-visual"></div>
+                    </div>
+
+                    <!-- Slot 2: Second Stage -->
+                    <div class="assembly-slot" id="slot-stage2" data-accepts="stage2">
+                        <div class="slot-label">SECOND STAGE | LOx/Ethanol</div>
+                        <div class="slot-visual"></div>
+                    </div>
+
+                    <!-- Interstage Adapter -->
+                    <div class="interstage-adapter"></div>
+
+                    <!-- Slot 3: First Stage (Booster) -->
+                    <div class="assembly-slot" id="slot-stage1" data-accepts="stage1">
+                        <div class="slot-label">FIRST STAGE | LOx/Kerosene</div>
+                        <div class="slot-visual"></div>
+                    </div>
+
+                    <!-- Slot 4: Engine Section (Critical Realistic Part) -->
+                    <div class="assembly-slot engine-section" id="slot-engine" data-accepts="engine">
+                        <div class="slot-label">PROPULSION | RS-25 CLUSTER</div>
+                        <!-- Detailed Engine Structure for CSS -->
+                        <div class="engine-assembly-visual">
+                            <div class="gimbal-mount"></div>
+                            <div class="combustion-chamber"></div>
+                            <div class="nozzle-bell"></div> <!-- Bell-curve nozzle -->
+                            <div class="turbopump-housing"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT: Systems & Inventory Panel -->
+            <aside class="systems-panel">
+                
+                <!-- Telemetry Data (Professional Look) -->
+                <div class="telemetry-box">
+                    <h3>TELEMETRY</h3>
+                    <div class="data-row"><span>STRUCTURAL MASS:</span> <span id="mass-val">12,400 KG</span></div>
+                    <div class="data-row"><span>PROPELLANT LOAD:</span> <span id="fuel-val">0 %</span></div>
+                    <div class="data-row"><span>THRUST-TO-WEIGHT:</span> <span id="twr-val">0.00</span></div>
+                    <div class="data-row"><span>AMBIENT TEMP:</span> <span>22 C</span></div>
+                </div>
+
+                <!-- Parts Inventory (Draggable/Clickable) -->
+                <div class="inventory-box">
+                    <h3>COMPONENT INVENTORY</h3>
+                    
+                    <div class="part-card" data-part-type="fairing">
+                        <div class="part-icon fairing-icon"></div>
+                        <div class="part-info">
+                            <span class="part-name">Payload Fairing</span>
+                            <span class="part-mass">Mass: 1,200 kg</span>
+                        </div>
+                    </div>
+
+                    <div class="part-card" data-part-type="stage2">
+                        <div class="part-icon stage2-icon"></div>
+                        <div class="part-info">
+                            <span class="part-name">Second Stage Tank</span>
+                            <span class="part-mass">Mass: 3,100 kg</span>
+                        </div>
+                    </div>
+
+                    <div class="part-card" data-part-type="stage1">
+                        <div class="part-icon stage1-icon"></div>
+                        <div class="part-info">
+                            <span class="part-name">First Stage Booster</span>
+                            <span class="part-mass">Mass: 6,500 kg</span>
+                        </div>
+                    </div>
+
+                    <div class="part-card" data-part-type="engine">
+                        <div class="part-icon engine-icon"></div>
+                        <div class="part-info">
+                            <span class="part-name">RS-25 Engine (x4)</span>
+                            <span class="part-mass">Mass: 1,600 kg</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Launch Control Buttons -->
+                <div class="launch-control">
+                    <button id="arm-btn" disabled>ARM SYSTEM</button>
+                    <button id="launch-btn" disabled>INITIATE LAUNCH</button>
+                </div>
+
+            </aside>
+        </main>
+    </div>
+
+
+    <!-- LAUNCH MODAL (Engine Test & Takeoff View) -->
+    <div id="launch-sequence-view" class="hidden-modal">
+        
+        <!-- Camera HUD Overlay -->
+        <div class="camera-hud">
+            <div class="hud-top-left">CAM-01 | MAIN LC-39A</div>
+            <div class="hud-top-right" id="hud-time">T-00:00:00</div>
+            <div class="crosshair"></div>
+        </div>
+
+        <!-- The Actual Rocket for Launch -->
+        <div class="launch-vehicle-assembly" id="launch-vehicle">
+            <!-- Fairing -->
+            <div class="lv-fairing"></div>
+            <!-- Stage 2 -->
+            <div class="lv-stage2"></div>
+            <!-- Interstage -->
+            <div class="lv-interstage"></div>
+            <!-- Stage 1 -->
+            <div class="lv-stage1"></div>
+            <!-- Engines (Multiple nozzles) -->
+            <div class="lv-engine-cluster">
+                <div class="single-nozzle"></div>
+                <div class="single-nozzle"></div>
+                <div class="single-nozzle center-nozzle"></div>
+                <div class="single-nozzle"></div>
+                <div class="single-nozzle"></div>
+            </div>
+            
+         <div class="exhaust-plume" id="exhaust-plume">
+    <div class="mach-diamond" id="mach-diamond"></div> <!-- এখানে id যোগ করা হলো -->
+</div>
+
+        <!-- Smoke/Steam Cloud (এটা লঞ্চপ্যাডে থাকবে, তাই রকেটের বাইরে) -->
+        <div class="ground-effect-cloud" id="ground-cloud"></div>
+
+        <!-- Countdown Overlay -->
+        <div class="countdown-display" id="countdown-display"></div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
